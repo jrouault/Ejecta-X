@@ -1,14 +1,20 @@
-var ctx =canvas.getContext("2d");
+var ctx = canvas.getContext("2d");
+
+var fps = 0, now, lastUpdate = (new Date)*1 - 1;
+// The higher this value, the less the FPS will be affected by quick changes
+// Setting this to 1 will show you the FPS of the last sampled frame only
+var fpsFilter = 50;
 
 var img = new Image();
+img.src = 'bg.png';
 
 window.pos_x = 0;
 window.pos_y = 0;
 
-img.src = 'bg.png';
-
 var w = window.innerWidth;
 var h = window.innerHeight;
+console.log("width: " + w);
+console.log("height: " + h);
 var w2 = w/2;
 var h2 = h/2;
 
@@ -27,6 +33,7 @@ var animate = function() {
 	// so this will only "darken" the screen a bit
 	
 	ctx.globalCompositeOperation = 'source-over';
+	ctx.fillStyle = 'black';
 	ctx.fillRect(0,0,w,h);
 
 	// Use the additive blend mode to draw the bezier curves
@@ -50,20 +57,25 @@ var animate = function() {
 		ctx.strokeStyle = curve.color;
 		ctx.stroke();
 	}
-	if(window.pos_x>200)window.pos_x=0;
-	if(window.pos_y>200)window.pos_y=0;
+	if(window.pos_x> (w2 - (w2 / 5) ))window.pos_x=0;
+	if(window.pos_y> (w2 - (w2 / 5) ))window.pos_y=0;
 	window.pos_x++;
 	window.pos_y++;
 
-	ctx.save();
+    ctx.save();
 
-	ctx.globalAlpha = 1;
+    ctx.globalAlpha = 1;
 	if(img)ctx.drawImage(img, window.pos_x, window.pos_y);
 
-	ctx.restore();
+    ctx.fillStyle = 'red';
+    ctx.fillText(fps.toFixed(1) + "fps", w - (heading1 * 5), (h / 10));
 
+    ctx.restore();
+
+    var thisFrameFPS = 1000 / ((now = new Date) - lastUpdate);
+    fps += (thisFrameFPS - fps) / fpsFilter;
+    lastUpdate = now;
 };
-
 
 // The vertical touch position controls the number of curves;
 // horizontal controls the line width
@@ -73,15 +85,27 @@ document.addEventListener( 'touchmove', function( ev ) {
 	maxCurves = Math.floor((ev.touches[0].pageY/h) * curves.length);
 }, false );
 
-
-ctx.fillStyle = '#000000';
-ctx.fillRect( 0, 0, w, h );
+//ctx.fillStyle = '#000000';
+//ctx.fillRect( 0, 0, w, h );
 
 ctx.globalAlpha = 0.5;
 ctx.lineWidth = 2;
+
+/**************
+* Font
+**************/
+var heading1 = (w / 16);
+var heading2 = (w / 24);
+
+try {
+    ctx.font = heading1 + "px font/Roboto-Bold.ttf";
+} catch(e) {
+    ctx.font = heading1 + "px Arial";
+}
+
 setInterval( animate, 16 );
 
 //test XMLHttpRequest
 var request = new XMLHttpRequest()
 request.open("GET","www.google.com");
-request.send()
+request.send();

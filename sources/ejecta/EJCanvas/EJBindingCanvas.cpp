@@ -1,6 +1,9 @@
 #include "EJBindingCanvas.h"
 #include "EJBindingImageData.h"
 #include "EJCanvasContextScreen.h"
+#include "2D/EJCanvas2DTypes.h"
+#include "2D/EJConvertColorRGBA.h"
+
 
 bool EJBindingCanvas::firstCanvasInstance = true;
 
@@ -691,8 +694,36 @@ EJ_BIND_FUNCTION(EJBindingCanvas, drawImage, ctx, argc, argv) {
  	return NULL;
  }
 
+ 
+EJ_BIND_FUNCTION(EJBindingCanvas, createLinearGradient, ctx, argc, argv) {
+	EJVector2 p1, p2;
+	EJ_UNPACK_ARGV(p1.x, p1.y, p2.x, p2.y);
+	
+        // Create the native instance
+ 	EJCanvasGradient * gradient = new EJCanvasGradient();
+        gradient = (EJCanvasGradient *)->initLinearGradientWithP1(p1, p2);
+        EJBindingCanvasGradient * canvasGradient = (EJBindingCanvasGradient *)->createJSObjectWithContext(ctx, renderingContext, gradient);
+        
+	// EJCanvasGradient *gradient = [[[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2] autorelease];
+	// return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
+        return canvasGradient;
+}
+/*
+EJ_BIND_FUNCTION(EJBindingCanvas, addColorStop, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	
+	float offset = JSValueToNumberFast(ctx, argv[0]);
+	if( offset < 0 || offset > 1 ) { return NULL; }
+	
+	EJColorRGBA color = JSValueToColorRGBA(ctx, argv[1]);
+	
+	[gradient addStopWithColor:color at:offset];
+	return NULL;
+}
+*/
+ 
  EJ_BIND_FUNCTION_NOT_IMPLEMENTED(EJBindingCanvas, createRadialGradient );
- EJ_BIND_FUNCTION_NOT_IMPLEMENTED(EJBindingCanvas, createLinearGradient );
+ // EJ_BIND_FUNCTION_NOT_IMPLEMENTED(EJBindingCanvas, createLinearGradient );
  EJ_BIND_FUNCTION_NOT_IMPLEMENTED(EJBindingCanvas, createPattern );
  EJ_BIND_FUNCTION_NOT_IMPLEMENTED(EJBindingCanvas, isPointInPath );
 //end

@@ -79,6 +79,16 @@ ctx.fillRect( 0, 0, w, h );
 
 ctx.globalAlpha = 0.5;
 ctx.lineWidth = 2;
+
+// Test linear gradient
+ctx.beginPath();
+linearGradient = ctx.createLinearGradient(0, ctx.height * 0.5, 0, ctx.height * 0.75);
+linearGradient.addColorStop(0, 'black');
+linearGradient.addColorStop(1, 'white');
+ctx.fillStyle = linearGradient;
+ctx.rect(0, ctx.height * 0.5, ctx.width, ctx.height * 0.25);
+ctx.fill();
+
 setInterval( animate, 16 );
 
 //test XMLHttpRequest

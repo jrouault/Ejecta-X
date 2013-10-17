@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <vector>
-#include "EJCanvasTypes.h"
+#include "2D/EJCanvas2DTypes.h"
 #include "EJCanvasContext.h"
 #include "../EJCocoa/support/NSPlatformMacros.h"
 

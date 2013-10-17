@@ -17,7 +17,7 @@
 #include "EJTexture.h"
 #include "EJImageData.h"
 #include "EJPath.h"
-#include "EJCanvasTypes.h"
+#include "2D/EJCanvas2DTypes.h"
 #include "EJFont.h"
 #include "../EJCocoa/NSDictionary.h"
 #include "../EJCocoa/NSCache.h"

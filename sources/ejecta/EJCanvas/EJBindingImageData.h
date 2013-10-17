@@ -5,9 +5,8 @@
 #include "EJImageData.h"
 
 class EJBindingImageData : public EJBindingBase {
-private:
-	JSObjectRef dataArray;
-public:
+
+    public:
 	EJImageData* m_imageData;
 
 	EJBindingImageData(JSContextRef ctx, JSObjectRef obj, EJImageData* imageData);
@@ -24,6 +23,8 @@ public:
 	EJ_BIND_GET_DEFINE( data, ctx );
 	EJ_BIND_GET_DEFINE( width, ctx );
 	EJ_BIND_GET_DEFINE( height, ctx );
+ private:
+	JSObjectRef dataArray;
 };
 
 #endif //_EJ_BINDINGIMAGE_DATA_H_

@@ -22,14 +22,7 @@ typedef struct EJCanvasGradientColorStop {
         }
 } EJCanvasGradientColorStop;
 
-class EJCanvasGradient : public EJFillable {
-public:
-	EJCanvasGradientType type;
-	EJVector2 p1, p2;
-	float r1, r2;
-	
-	NSArray *colorStops;
-	EJTexture *texture;
+class EJCanvasGradient /*: public EJFillable*/ {
 
 private:
         bool initLinearGradientWithP1(EJVector2 p1, EJVector2 p2);
@@ -40,7 +33,7 @@ private:
         
         ~EJCanvasGradient();
             
-        NSData * getPixelsWithWidth(int width, NSArray stops);
+        //NSData * getPixelsWithWidth(int width, NSArray stops);
                     
         EJCanvasGradientType type;
         EJTexture *texture;
@@ -48,4 +41,5 @@ private:
         EJVector2 p2;
         float r1;
         float r2;
+	NSArray *colorStops;
 };

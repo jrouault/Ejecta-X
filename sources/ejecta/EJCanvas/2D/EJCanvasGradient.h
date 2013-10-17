@@ -1,8 +1,7 @@
 #include "EJCanvas2DTypes.h"
 #include "../EJCanvasContext.h"
 #include "../EJTexture.h"
-#include "../../Foundation/NSMutableArray.h"
-#include "../../Foundation/NSData.h"
+#include "../../EJCocoa/NSArray.h"
 
 #define EJ_CANVAS_GRADIENT_WIDTH 1024
 
@@ -11,10 +10,16 @@ typedef enum {
 	kEJCanvasGradientTypeRadial
 } EJCanvasGradientType;
 
-typedef struct {
+typedef struct EJCanvasGradientColorStop {
 	float pos;
 	int order;
 	EJColorRGBA color;
+        static int compare(const void *first_arg, const void *second_arg) {
+                EJCanvasGradientColorStop first = *(EJCanvasGradientColorStop*)first_arg;
+                EJCanvasGradientColorStop second = *(EJCanvasGradientColorStop*)second_arg;
+
+                return (first.pos == second.pos) ? (first.order - second.order) : (first.pos - second.pos);
+        }
 } EJCanvasGradientColorStop;
 
 class EJCanvasGradient : public EJFillable {
@@ -23,7 +28,7 @@ public:
 	EJVector2 p1, p2;
 	float r1, r2;
 	
-	NSMutableArray *colorStops;
+	NSArray *colorStops;
 	EJTexture *texture;
 
 private:

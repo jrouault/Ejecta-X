@@ -424,6 +424,35 @@ void NSArray::reduceMemoryFootprint()
     nsArrayShrink(data);
 }
 
+NSArray* NSArray::sortedArrayUsingComparator(int(*compareFunction)(const void *, const void *))
+{
+    NSArray* pRet = (NSArray*)this->copy();
+    if(pRet) {
+        pRet->autorelease();
+        if(pRet->data && pRet->data->num > 1)
+        {
+            //Your favorite sorting algorithm!
+            //Here is Selection sort O(n^2) because NSArray comes with a swap function
+            int iMin;
+            int count = (int)pRet->data->num;
+            for(int j = 0; j < count - 1; ++j) {
+                iMin = j;
+                for(int i = j + 1; i < count; ++i) {
+                    if(compareFunction(&(pRet->data->arr[iMin]), &(pRet->data->arr[i])) > 0) {
+                        iMin = i;
+                    }
+                }
+         
+                if(iMin != j) {
+                    nsArraySwapObjectsAtIndexes(pRet->data, j, iMin);
+                }
+            }
+
+        }
+    }
+    return pRet;
+}
+
 NSArray::~NSArray()
 {
     nsArrayFree(data);

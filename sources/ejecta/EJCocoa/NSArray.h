@@ -222,7 +222,10 @@ public:
     void reverseObjects();
     /* Shrinks the array so the memory footprint corresponds with the number of items */
     void reduceMemoryFootprint();
-  
+    
+    /** Sort and return a copy of the array */
+    NSArray* sortedArrayUsingComparator(int(*compareFunction)(const void *, const void *));
+
     /* override functions */
     virtual NSObject* copyWithZone(NSZone* pZone);
 

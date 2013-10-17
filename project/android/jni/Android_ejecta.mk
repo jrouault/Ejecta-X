@@ -24,8 +24,8 @@ LOCAL_C_INCLUDES := \
                     $(LOCAL_PATH) \
                     $(LOCAL_PATH)/../../../sources/ejecta \
                     $(LOCAL_PATH)/../../../sources/ejecta/EJCanvas \
-                    $(LOCAL_PATH)/../../../sources/ejecta/Foundation \
-                    $(LOCAL_PATH)/../../../sources/ejecta/Foundation/support \
+                    $(LOCAL_PATH)/../../../sources/ejecta/EJCocoa \
+                    $(LOCAL_PATH)/../../../sources/ejecta/EJCocoa/support \
                     $(LOCAL_PATH)/../../../sources/ejecta/EJUtils \
                     $(LOCAL_PATH)/../../../library/android/libfreetype/include \
                     $(LOCAL_PATH)/../../../library/android/libpng/include \
@@ -37,20 +37,20 @@ LOCAL_SRC_FILES := \
                     ../../../sources/ejecta/lodefreetype/lodefreetype.cpp \
                     ../../../sources/ejecta/lodepng/lodepng.cpp \
                     ../../../sources/ejecta/lodejpeg/lodejpeg.cpp \
-                    ../../../sources/ejecta/Foundation/support/nsCArray.cpp \
-                    ../../../sources/ejecta/Foundation/NSObject.cpp \
-                    ../../../sources/ejecta/Foundation/NSObjectFactory.cpp \
-                    ../../../sources/ejecta/Foundation/NSGeometry.cpp \
-                    ../../../sources/ejecta/Foundation/NSAutoreleasePool.cpp \
-                    ../../../sources/ejecta/Foundation/NSArray.cpp \
-                    ../../../sources/ejecta/Foundation/CGAffineTransform.cpp \
-                    ../../../sources/ejecta/Foundation/NSDictionary.cpp \
-                    ../../../sources/ejecta/Foundation/NSNS.cpp \
-                    ../../../sources/ejecta/Foundation/NSSet.cpp \
-                    ../../../sources/ejecta/Foundation/NSString.cpp \
-                    ../../../sources/ejecta/Foundation/NSValue.cpp \
-                    ../../../sources/ejecta/Foundation/NSZone.cpp \
-                    ../../../sources/ejecta/Foundation/NSCache.cpp \
+                    ../../../sources/ejecta/EJCocoa/support/nsCArray.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSObject.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSObjectFactory.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSGeometry.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSAutoreleasePool.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSArray.cpp \
+                    ../../../sources/ejecta/EJCocoa/CGAffineTransform.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSDictionary.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSNS.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSSet.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSString.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSValue.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSZone.cpp \
+                    ../../../sources/ejecta/EJCocoa/NSCache.cpp \
                     ../../../sources/ejecta/EJApp.cpp \
                     ../../../sources/ejecta/EJConvert.cpp \
                     ../../../sources/ejecta/EJBindingBase.cpp \

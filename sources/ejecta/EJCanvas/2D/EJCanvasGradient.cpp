@@ -61,13 +61,16 @@ EJTexture * EJCanvasGradient::texture() {
 EJCanvasGradient::rebuild() {
 	// Sort color stops by positions. If two ore more stops are at the same
 	// position, ensure that the one added last (.order) will be on top
-	NSArray *sortedStops = [colorStops sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+        
+        NSArray *sortedStops = colorStops->sortedArrayUsingComparator(EJCanvasGradientColorStop::compare);
+	/*TODO: Remove this. Kept for reference.
+        NSArray *sortedStops = [colorStops sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
 		EJCanvasGradientColorStop s1, s2;
 		[a getValue:&s1];
 		[b getValue:&s2];
 		
 		return (s1.pos == s2.pos) ? (s1.order - s2.order) : (s1.pos - s2.pos);
-	}];
+	}];*/
 	
 	NSData *pixels = [self getPixelsWithWidth:EJ_CANVAS_GRADIENT_WIDTH forSortedStops:sortedStops];
 	
@@ -80,7 +83,7 @@ EJCanvasGradient::rebuild() {
 	}
 }
 
-NSData *) EJCanvasGradient::etPixelsWithWidth(width, stops) {
+NSData * EJCanvasGradient::getPixelsWithWidth(width, stops) {
 	
 	int byteSize = width * 4;
 	NSMutableData *pixels = [NSMutableData dataWithLength:byteSize];

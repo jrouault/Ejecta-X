@@ -1,6 +1,7 @@
 #include "EJApp.h"
 #include "EJBindingBase.h"
 #include "EJUtils/EJBindingTouchInput.h"
+#include "EJUtils/EJBindingWizCanvasMessenger.h"
 #include "EJUtils/EJBindingHttpRequest.h"
 #include "EJCanvas/EJCanvasContext.h"
 #include "EJCanvas/EJCanvasContextScreen.h"
@@ -60,7 +61,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 EJApp* EJApp::ejectaInstance = NULL;
 
 
-EJApp::EJApp() : currentRenderingContext(0), screenRenderingContext(0), touchDelegate(0), touches(0), openGLContext(NULL)
+EJApp::EJApp() : currentRenderingContext(0), screenRenderingContext(0), touchDelegate(0), messengerDelegate(0), touches(0), openGLContext(NULL)
 {
 	NSPoolManager::sharedPoolManager()->push();
 
@@ -86,10 +87,16 @@ EJApp::EJApp() : currentRenderingContext(0), screenRenderingContext(0), touchDel
 	{
 		touches->retain();
 	}
+        lockMessages = false;
+        messages = NSArray::create();
+        if (messages != NULL) {
+            messages->retain();
+	}
+
 
 	// Create the global JS context and attach the 'Ejecta' object
 		jsClasses = new NSDictionary();
-		
+	
 		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
 		constructorClassDef.callAsConstructor = ej_callAsConstructor;
 		ej_constructorClass = JSClassCreate(&constructorClassDef);
@@ -127,10 +134,15 @@ EJApp::~EJApp()
 	//JSGlobalContextRelease(jsGlobalContext);
 	currentRenderingContext->release();
 	if(touchDelegate)touchDelegate->release();
+        if(messengerDelegate) {
+            messengerDelegate->release();
+        }
 	jsClasses->release();
 	
 	touches->release();
 	timers->release();
+        messages->release();
+       
 	if(mainBundle)
 		free(mainBundle);
 
@@ -146,7 +158,7 @@ void EJApp::init(JNIEnv* env, jobject jobj, const char* path, int w, int h)
 {
         env->GetJavaVM(&jvm);
         
-        g_obj = jobj;
+        this->g_obj = env->NewGlobalRef(jobj);
 
 	if(mainBundle)
 		free(mainBundle);
@@ -162,10 +174,6 @@ void EJApp::init(JNIEnv* env, jobject jobj, const char* path, int w, int h)
 
 	height = h;
 	width = w;
-
-	// Load the initial JavaScript source files
-	// loadScriptAtPath(NSStringMake(EJECTA_BOOT_JS));
-	// loadScriptAtPath(NSStringMake(EJECTA_MAIN_JS));
 }
 
 
@@ -199,6 +207,18 @@ void EJApp::run(void)
 		}
 		lockTouches = false;
 	}
+        
+        if (!lockMessages) {
+            lockMessages = true;
+            if (messengerDelegate&&messages&&messages->count()>0) {
+                EJMessageEvent *event = (EJMessageEvent*)messages->objectAtIndex(0); 
+                // NSLOG("event %s :: %s", event->eventName->getCString(), event->message->getCString());
+                messengerDelegate->triggerEvent(event->eventName, event->message, event->type);
+                messages->removeObjectAtIndex(0);
+            }
+            lockMessages = false;
+        }
+        
 
 	// Check all timers
 	timers->update();
@@ -255,6 +275,21 @@ void EJApp::loadJavaScriptFile(const char *filename) {
         loadScriptAtPath(convertedFilename);
 }
 
+void EJApp::evaluateScript(const char *script) {
+        // char to NSString
+        string scriptString = string(script);
+        NSString *convertedscript = NSStringMake(scriptString);
+        NSLOG("Evaluating script...");
+
+        JSStringRef scriptJS = JSStringCreateWithUTF8CString(convertedscript->getCString());
+        
+        JSValueRef exception = NULL;
+	JSEvaluateScript( jsGlobalContext, scriptJS, NULL, NULL, 0, &exception );
+	logException(exception, jsGlobalContext);
+        
+        JSStringRelease( scriptJS );
+}
+
 void EJApp::loadScriptAtPath(NSString * path)
 {
     
@@ -265,7 +300,7 @@ void EJApp::loadScriptAtPath(NSString * path)
 		return;
 	}
 	
-	NSLOG("Loading Script: %s", path->getCString() );
+	NSLOG("Loading file: %s", path->getCString() );
 
 	JSStringRef scriptJS = JSStringCreateWithUTF8CString(script->getCString());
 	JSStringRef pathJS = JSStringCreateWithUTF8CString(path->getCString());
@@ -392,6 +427,19 @@ void EJApp::logException(JSValueRef valueAsexception, JSContextRef ctxp)
 	JSStringRelease( jsFilePropertyName );
 }
 
+// ---------------------------------------------------------------------------------
+// Message Handler
+
+void EJApp::triggerMessage(const char *message, const char *type) {
+    // TODO convert script to NSString
+    if (!lockMessages) {
+        lockMessages= true;
+        EJMessageEvent *event = new EJMessageEvent("message", message, type);
+        messages->addObject(event);
+        event->release();
+        lockMessages = false;
+    }
+}
 
 // ---------------------------------------------------------------------------------
 // Touch handlers
@@ -507,3 +555,5 @@ void EJApp::finalize()
 		ejectaInstance = NULL;
 	}
 }
+
+

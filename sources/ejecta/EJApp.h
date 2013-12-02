@@ -40,15 +40,12 @@ class EJCanvasContext;
 class EJCanvasContextScreen;
 
 class EJBindingTouchInput;
-
+class EJBindingWizCanvasMessenger;
 
 class EJApp : public NSObject {
 
 private:
 	BOOL paused;
-
-	JavaVM *jvm;
-	jobject g_obj;
         
 	NSDictionary * jsClasses;
 	EJTimerCollection * timers;
@@ -63,16 +60,21 @@ private:
 	
 public:
 
+        jobject g_obj;
+        JavaVM *jvm;
 	BOOL landscapeMode;
 	JSGlobalContextRef jsGlobalContext;
 	int height, width;
 
 	EJBindingTouchInput * touchDelegate;
+	EJBindingWizCanvasMessenger *messengerDelegate;
 	EJCanvasContext * currentRenderingContext;
 	EJCanvasContextScreen * screenRenderingContext;
 	float internalScaling;
 	BOOL lockTouches;
 	NSArray* touches;
+        BOOL lockMessages;
+        NSArray *messages;
 
     EJApp(void);
     ~EJApp(void);
@@ -89,7 +91,10 @@ public:
 
     JSClassRef getJSClassForClass(EJBindingBase* classId);
     void hideLoadingScreen(void);
+    void triggerMessage(const char *message, const char *type);
+
     void loadJavaScriptFile(const char *filename);
+    void evaluateScript(const char *script);
     void loadScriptAtPath(NSString * path);
     JSValueRef loadModuleWithId(NSString * moduleId, JSValueRef module, JSValueRef exports);
     JSValueRef invokeCallback(JSObjectRef callback, JSObjectRef thisObject, size_t argc, const JSValueRef argv[]);

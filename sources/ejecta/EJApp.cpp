@@ -201,7 +201,7 @@ void EJApp::run(void)
 		if (touchDelegate&&touches&&touches->count()>0)
 		{
 			EJTouchEvent* event = (EJTouchEvent*)touches->objectAtIndex(0);
-			NSLOG("event count %d %s(%d, %d)", touches->count(), event->eventName->getCString(), event->posX, event->posY);
+			// NSLOG("event count %d %s(%d, %d)", touches->count(), event->eventName->getCString(), event->posX, event->posY);
 			touchDelegate->triggerEvent(event->eventName, event->posX, event->posY);
 			touches->removeObjectAtIndex(0);
 		}
